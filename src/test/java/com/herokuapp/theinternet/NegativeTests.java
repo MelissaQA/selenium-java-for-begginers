@@ -9,7 +9,8 @@ import org.testng.annotations.Test;
 
 public class NegativeTests {
 
-	@Test
+	@Test(priority = 1 , groups = {"negativeTests", "smokeTests"})
+	//enabled = false
 	public void incorrectUsernameTest() {
 		System.out.println("Start - Incorrect Username Test");
 //		Create driver
@@ -48,7 +49,7 @@ public class NegativeTests {
 		
 	}
 	
-	@Test
+	@Test (priority = 2, groups = {"negativeTests"})
 	public void incorrectPasswordTest() {
 		
 		System.out.println("Start - Incorrect Password Test");

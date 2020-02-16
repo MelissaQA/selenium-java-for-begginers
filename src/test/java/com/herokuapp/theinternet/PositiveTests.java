@@ -4,17 +4,44 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 public class PositiveTests {
 
+	private WebDriver driver;
+	
+	@Parameters({"browser"})
+	@BeforeMethod
+	public void setUp(String browser) {
+//		Create driver
+		
+		switch (browser) {
+		case "chrome":
+			System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+			driver = new ChromeDriver();
+			break;
+
+		case "firefox":
+			System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver.exe");
+			driver = new FirefoxDriver();
+			break;
+		default:
+			System.out.println("Selected "+browser+"browser but not allowed. Default browser is Chrome!");
+			System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+			driver = new ChromeDriver();
+			break;
+		}
+		
+	}
+	
 	@Test
 	public void loginTest() {
 		System.out.println("Start - Login Test");
-//		Create driver
-		System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
-		WebDriver driver = new ChromeDriver();
 		
 //		open test page
 		String url = "https://the-internet.herokuapp.com/login";
@@ -52,9 +79,14 @@ public class PositiveTests {
 		String actualMessage = successMessage.getText();
 		String expectedMessage = "You logged into a secure area!";
 		Assert.assertTrue(actualMessage.contains(expectedMessage),"Login messages don't match. Actual: "+actualMessage+ " - Expected: "+expectedMessage);
+		tearDown();
+		
+	}
+
+	@AfterMethod
+	private void tearDown() {
 		//Close browser
 		driver.quit();
-		
 	}
 	
 	private void sleep(long m) {
